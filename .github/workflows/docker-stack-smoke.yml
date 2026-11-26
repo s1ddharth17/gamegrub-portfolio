@@ -1,0 +1,46 @@
+name: Docker Stack Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/docker-stack-smoke.yml"
+      - "compose.yaml"
+      - "gamegrub2.sql"
+      - "backend/**"
+      - "gamegrubadmin/**"
+      - "gamegrub_user/**"
+      - "scripts/smoke-test.ps1"
+  pull_request:
+    paths:
+      - ".github/workflows/docker-stack-smoke.yml"
+      - "compose.yaml"
+      - "gamegrub2.sql"
+      - "backend/**"
+      - "gamegrubadmin/**"
+      - "gamegrub_user/**"
+      - "scripts/smoke-test.ps1"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build and start Docker stack
+        run: docker compose up --build --detach --wait --wait-timeout 900
+
+      - name: Smoke-test backend and both web apps
+        shell: pwsh
+        run: ./scripts/smoke-test.ps1
+
+      - name: Show service logs after failure
+        if: failure()
+        run: docker compose logs --no-color --tail=150
+
+      - name: Stop stack and remove temporary volumes
+        if: always()
+        run: docker compose down --volumes --remove-orphans

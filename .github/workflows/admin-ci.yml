@@ -1,0 +1,38 @@
+name: Admin CI
+
+on:
+  push:
+    paths:
+      - "gamegrubadmin/**"
+      - ".github/workflows/admin-ci.yml"
+  pull_request:
+    paths:
+      - "gamegrubadmin/**"
+      - ".github/workflows/admin-ci.yml"
+
+jobs:
+  admin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gamegrubadmin
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: gamegrubadmin/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run admin tests
+        run: npm run test:ci
+
+      - name: Build admin app
+        run: npm run build

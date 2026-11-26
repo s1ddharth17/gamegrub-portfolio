@@ -1,0 +1,35 @@
+name: Backend Healthcheck
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  backend-healthcheck:
+    if: ${{ vars.BACKEND_HEALTHCHECK_BASE_URL != '' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run backend healthcheck
+        env:
+          HEALTHCHECK_BASE_URL: ${{ vars.BACKEND_HEALTHCHECK_BASE_URL }}
+          HEALTHCHECK_ENVIRONMENT: ${{ vars.BACKEND_HEALTHCHECK_ENVIRONMENT }}
+          HEALTHCHECK_TIMEOUT_MS: ${{ vars.BACKEND_HEALTHCHECK_TIMEOUT_MS }}
+          HEALTHCHECK_ENDPOINTS: ${{ vars.BACKEND_HEALTHCHECK_ENDPOINTS }}
+          HEALTHCHECK_ALERT_WEBHOOK_URL: ${{ secrets.BACKEND_HEALTHCHECK_ALERT_WEBHOOK_URL }}
+        run: npm run ops:healthcheck

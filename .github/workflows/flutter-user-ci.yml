@@ -1,0 +1,36 @@
+name: Flutter User CI
+
+on:
+  push:
+    paths:
+      - "gamegrub_user/**"
+      - ".github/workflows/flutter-user-ci.yml"
+  pull_request:
+    paths:
+      - "gamegrub_user/**"
+      - ".github/workflows/flutter-user-ci.yml"
+
+jobs:
+  flutter-user:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install Flutter dependencies
+        working-directory: gamegrub_user
+        run: flutter pub get
+
+      - name: Analyze Flutter app
+        working-directory: gamegrub_user
+        run: flutter analyze
+
+      - name: Run Flutter tests
+        working-directory: gamegrub_user
+        run: flutter test
