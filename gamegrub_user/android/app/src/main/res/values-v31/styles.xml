@@ -18,4 +18,4 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">@drawable/background</item>
     </style>
-</resources>`n`n
+</resources>

@@ -102,4 +102,4 @@ function autoSessionEngine() {
 
 }
 
-module.exports = autoSessionEngine;`n`n
+module.exports = autoSessionEngine;

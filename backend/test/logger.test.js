@@ -42,4 +42,4 @@ test("production logger redacts sensitive fields and hides stack traces", (t) =>
   assert.equal(entry.refresh_token, "[redacted]");
   assert.equal(entry.error.message, "boom");
   assert.equal(entry.error.stack, undefined);
-});`n`n
+});
