@@ -1,6 +1,7 @@
 name: Flutter User CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "gamegrub_user/**"
